@@ -1,0 +1,16 @@
+CLASP 系統檔案 (含有 Script ID，嚴禁外洩)
+
+.clasp.json
+
+Node.js 依賴項
+
+node_modules/
+
+系統暫存檔
+
+.DS_Store
+Thumbs.db
+
+執行紀錄與暫存
+
+*.log
