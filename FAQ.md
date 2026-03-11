@@ -1,16 +1,17 @@
 # 常見問題與故障排除 (FAQ & Troubleshooting)
+**Project Status:** Stable (v3.4) | **Maintainer:** Obie Chen | Updated: Mar.11.2026
 
 本文件彙整了 **GAS行事曆每日秘書** 在安裝、設定與日常使用中可能遇到的問題與解決方案。
 
 ## 📋 目錄
 
-1. [費用與帳戶機制 (Billing & Account)](https://www.google.com/search?q=%231-%E8%B2%BB%E7%94%A8%E8%88%87%E5%B8%B3%E6%88%B6%E6%A9%9F%E5%88%B6-billing--account)
+1. [費用與帳戶機制 (Billing & Account)](#1-費用與帳戶機制-billing--account)
     - 包含：是否免費、綁卡差異、額度不足錯誤 (429/Limit 0)
-2. [安裝與執行障礙 (Installation & Execution)](https://www.google.com/search?q=%232-%E5%AE%89%E8%A3%9D%E8%88%87%E5%9F%B7%E8%A1%8C%E9%9A%9C%E7%A4%99-installation--execution)
+2. [安裝與執行障礙 (Installation & Execution)](#2-安裝與執行障礙-installation--execution)
     - 包含：設定檔無效、紅色授權警告、API 連線錯誤 (404/503)
-3. [功能與排程邏輯 (Functionality & Scheduling)](https://www.google.com/search?q=%233-%E5%8A%9F%E8%83%BD%E8%88%87%E6%8E%92%E7%A8%8B%E9%82%8F%E8%BC%AF-functionality--scheduling)
+3. [功能與排程邏輯 (Functionality & Scheduling)](#3-功能與排程邏輯-functionality--scheduling)
     - 包含：沒收到信、休假誤寄、週末沒信
-4. [內容品質與輸出 (Content Quality & Output)](https://www.google.com/search?q=%234-%E5%85%A7%E5%AE%B9%E5%93%81%E8%B3%AA%E8%88%87%E8%BC%B8%E5%87%BA-content-quality--output)
+4. [內容品質與輸出 (Content Quality & Output)](#4-內容品質與輸出-content-quality--output)
     - 包含：分類錯誤、語氣調整、CSV 亂碼
 
 ## 1. 費用與帳戶機制 (Billing & Account)

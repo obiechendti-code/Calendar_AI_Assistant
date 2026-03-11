@@ -1,26 +1,27 @@
 /**
  * 流程控制：每日 AI 行程匯報
  * Workflow: Daily Schedule Briefing
- * * 職責 (Responsibilities):
+ * * * [版本紀錄]
+ * v3.0 (2026-03-05): 模組化重構，分離 Config, Prompt, Utils。
+ * v3.3 (2026-03-11): 靜態資訊抽離至 Workflow 派送階段處理。
+ * v3.4 (2026-03-11): 導入全域錯誤攔截 (Resilience)，並整合靜態招呼語與系統資訊。
+ * * * 職責 (Responsibilities):
  * 1. 排程守門員 (Gatekeeper): 檢查星期幾、休假關鍵字 (Config)
  * 2. 資料獲取 (Extraction): 讀取 Calendar Events
  * 3. 核心處理 (Processing): 呼叫 Gemini AI (Prompt + Model)
  * 4. 派送交付 (Delivery): 寄送 Gmail (HTML)、同步 Notion DB
- * 5. [優化] 異常處理 (Resilience): 全域錯誤攔截與主動通知
+ * 5. 異常處理 (Resilience): 全域錯誤攔截與主動通知
  *
  * 相依檔案 (Dependencies):
- * - Config.gs
- * - Prompt.gs
- * - Utils_CalendarParser.gs
- * - Utils_TaskClassifier.gs
+ * - Config.gs, Prompt.gs
+ * - Utils_CalendarParser.gs, Utils_TaskClassifier.gs
  * - Utils_Notion.gs (Optional)
  */
 
 function sendDailyBriefing() {
   const now = new Date();
 
-  // [優化] 加入全域錯誤攔截 (Global Error Handling)
-  // 確保即使程式崩潰，也能收到通知，而不是無聲無息地失敗
+  // [Resilience] 全域錯誤攔截
   try {
     
     // --- Phase 1: 星期幾檢查 (Gatekeeping Level 1) ---
@@ -31,7 +32,7 @@ function sendDailyBriefing() {
     }
 
     // --- Phase 2: 資料獲取 (Extraction - 僅做一次) ---
-    // [優化] 提早抓取 Events，供後續 "休假檢查" 與 "資料處理" 共用，節省 API 呼叫
+    // 提早抓取 Events，供後續 "休假檢查" 與 "資料處理" 共用，節省 API 呼叫
     const events = CalendarApp.getCalendarById(CONFIG.CALENDAR_ID).getEventsForDay(now);
 
     if (events.length === 0) {
@@ -41,7 +42,6 @@ function sendDailyBriefing() {
     }
 
     // --- Phase 3: 休假/勿擾檢查 (Gatekeeping Level 2) ---
-    // 使用已抓取的 events 進行檢查
     const isOffDay = events.some(event => {
       if (!event.isAllDayEvent()) return false;
       const title = event.getTitle().toLowerCase();
@@ -80,7 +80,6 @@ function sendDailyBriefing() {
     const briefingContent = callGeminiAPI(scheduleContext);
 
     if (!briefingContent || briefingContent.startsWith("(AI")) {
-      // 這裡 throw error 會觸發 catch 區塊寄送錯誤通知
       throw new Error("Gemini API 回傳無效內容或連線失敗。");
     }
 
@@ -91,11 +90,28 @@ function sendDailyBriefing() {
     const subject = `【工作匯報】${Utilities.formatDate(now, "GMT+8", "MM/dd")} 行程與重點提示`;
     
     if (recipient) {
+      // 【靜態內容注入與排版防呆】
+      // 1. 組合前綴招呼語、AI核心內容、後綴系統資訊 (動態抓取 Config 模型)
+      const finalContent = `早安，Obie。以下是今日的工作匯報：\n\n` + 
+                           briefingContent + 
+                           `\n\n--------------------------------------------------\n` +
+                           `[系統資訊]\n` +
+                           `• 執行模型：${CONFIG.GEMINI_MODEL}\n` +
+                           `• 程式版本：v3.4\n` +
+                           `• 執行時間：${Utilities.formatDate(now, "GMT+8", "yyyy-MM-dd HH:mm:ss")}`;
+
+      // 2. 攔截處理：將純文字的斷行強制轉換為 HTML 斷行，並套用乾淨的系統字體以防跑版
+      const safeHtmlBody = `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; white-space: pre-wrap; font-size: 14px; color: #333;">
+          ${finalContent.replace(/\n/g, '<br>')}
+        </div>
+      `;
+
       GmailApp.sendEmail(
         recipient,
         subject,
-        "您的郵件軟體不支援 HTML，請切換檢視模式。",
-        { htmlBody: briefingContent }
+        finalContent, // Fallback 給極少數不支援 HTML 的老舊客戶端
+        { htmlBody: safeHtmlBody }
       );
       console.log(`[Workflow] Email 已交付給：${recipient}`);
     } else {
@@ -171,18 +187,16 @@ function getRecipients() {
 
 /**
  * 核心：Gemini API 介接
- * 依賴: Config.gs (GEMINI_MODEL), Prompt.gs (PROMPT_DAILY_BRIEF)
+ * 依賴: Config.gs, Prompt.gs
  */
 function callGeminiAPI(scheduleData) {
   const apiKey = PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY");
   const modelVersion = CONFIG.GEMINI_MODEL;
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelVersion}:generateContent?key=${apiKey}`;
   
-  const geminiInstruction = PROMPT_DAILY_BRIEF;
-
   const payload = {
     "contents": [{ "parts": [{"text": `今日行程資料如下：\n${JSON.stringify(scheduleData)}`}] }],
-    "systemInstruction": { "parts": [{"text": geminiInstruction}] }
+    "systemInstruction": { "parts": [{"text": PROMPT_DAILY_BRIEF}] }
   };
 
   const options = {
@@ -210,7 +224,6 @@ function callGeminiAPI(scheduleData) {
     }
   } catch (e) {
     console.error("[Gemini] 連線請求失敗: ", e);
-    // 這裡不 throw，回傳 null 讓外層統一處理
     return null;
   }
 }

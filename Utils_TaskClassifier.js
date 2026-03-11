@@ -14,7 +14,8 @@ const TITLE_MAP = {
   "研究紀錄簿": "行政類",
   "報帳": "行政類",
   "休假": "行政類",
-  "週會": "行政類",
+  "讀書會": "營運類",
+  "研究紀錄簿": "營運類",
   "策略會議": "策略規劃"
 };
 
@@ -45,7 +46,6 @@ const TAG_MAP = {
  * @returns {string} 標準化專案名稱 (Default: "其他")
  */
 function classifyProject(tag, taskTitle) {
-  
   // Rule 1: 檢查標題 (Title Check)
   if (taskTitle) {
     const lowerTitle = taskTitle.toLowerCase();

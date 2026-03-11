@@ -1,16 +1,17 @@
 # GAS行事曆每日秘書：完全安裝手冊
+**Project Status:** Stable (v3.4) | **Maintainer:** Obie Chen | Updated: Mar.11.2026
 
 **歡迎使用您的個人 AI 秘書！**
 這套工具基於 **Google Apps Script (GAS)** 技術構建，深度串接 **Google Calendar** 自動讀取您的每日行程，並透過 **Google Gemini** 強大的 AI 模型進行智慧摘要、重點整理與優先級排序，最終將結構化的匯報寄到您的信箱。您不需要懂程式碼，只要依照本手冊的步驟「複製、貼上、點擊」，約 **10 分鐘** 即可完成設定。
 
 ## 📋 目錄
 
-1. [準備工作：取得鑰匙](https://www.google.com/search?q=%23-%E9%9A%8E%E6%AE%B5%E4%B8%80%E6%BA%96%E5%82%99%E5%B7%A5%E4%BD%9C-getting-ready)
-2. [建立專案：開啟後台](https://www.google.com/search?q=%23-%E9%9A%8E%E6%AE%B5%E4%BA%8C%E5%BB%BA%E7%AB%8B%E5%B0%88%E6%A1%88-create-project)
-3. [部署代碼：複製貼上](https://www.google.com/search?q=%23-%E9%9A%8E%E6%AE%B5%E4%B8%89%E9%83%A8%E7%BD%B2%E4%BB%A3%E7%A2%BC-copy--paste)
-4. [輸入設定：填寫機密](https://www.google.com/search?q=%23-%E9%9A%8E%E6%AE%B5%E5%9B%9B%E8%BC%B8%E5%85%A5%E6%A9%9F%E5%AF%86%E8%B3%87%E8%A8%8A-secrets-setup)
-5. [授權啟動：關鍵步驟](https://www.google.com/search?q=%23-%E9%9A%8E%E6%AE%B5%E4%BA%94%E6%8E%88%E6%AC%8A%E5%95%9F%E5%8B%95-authorization)
-6. [自動排程：設定鬧鐘](https://www.google.com/search?q=%23-%E9%9A%8E%E6%AE%B5%E5%85%AD%E8%A8%AD%E5%AE%9A%E8%87%AA%E5%8B%95%E6%8E%92%E7%A8%8B-automation)
+1. [準備工作：取得鑰匙](#-階段一準備工作-getting-ready)
+2. [建立專案：開啟後台](#-階段二建立專案-create-project)
+3. [部署代碼：複製貼上](#-階段三部署代碼-copy--paste)
+4. [輸入設定：填寫機密](#-階段四輸入機密資訊-secrets-setup)
+5. [授權啟動：關鍵步驟](#-階段四輸入機密資訊-secrets-setup)
+6. [自動排程：設定鬧鐘](#-階段六設定自動排程-automation)
 
 ## 🎒 階段一：準備工作 (Getting Ready)
 

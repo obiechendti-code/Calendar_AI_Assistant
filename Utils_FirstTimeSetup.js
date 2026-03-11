@@ -61,6 +61,6 @@ function checkStoredProperties() {
  * [危險] 清除所有設定 (慎用)
  */
 function deleteAllProperties() {
-  // PropertiesService.getScriptProperties().deleteAllProperties();
-  // console.log("已清除所有設定。");
+   PropertiesService.getScriptProperties().deleteAllProperties();
+   console.log("已清除所有設定。");
 }

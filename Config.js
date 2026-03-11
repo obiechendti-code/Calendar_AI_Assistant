@@ -36,8 +36,8 @@ const CONFIG = {
   // 這裡的資訊不敏感，可以保留在程式碼中方便調整
   
   // 1. 策略設定
-  RETENTION_DAYS: 14,             // 檔案保留天數
-  GEMINI_MODEL: "gemini-2.0-flash-lite", // AI 模型版本
+  RETENTION_DAYS: 365,             // 檔案保留天數
+  GEMINI_MODEL: "gemini-2.5-flash-lite", // AI 模型版本
   
   // 2. 排程規則
   ACTIVE_DAYS: [1, 2, 3, 4, 5],   // 寄送工作日 (週一~週五)
